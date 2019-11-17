@@ -1,9 +1,11 @@
 <?php
+
+$errMsg = '';
 require_once('NewsDB.class.php');
 
 $news = new NewsDB();
+//print_r($news->getNews());
 
-$errMsg = '';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') include_once('save_news.inc.php');
 ?>

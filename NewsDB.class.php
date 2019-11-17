@@ -133,6 +133,8 @@ class NewsDB implements INewsDB
 
     function saveNews($title, $category, $description, $source)
     {
+        try
+        {
         $title = $this->makeStringDateToDB($title);
         $category = $this->makeIntegerDateToDB($category);
         $description = $this->makeStringDateToDB($description);
@@ -142,30 +144,38 @@ class NewsDB implements INewsDB
         $sql = 'INSERT INTO msgs (title,category,description,source,datetime) VALUES (?,?,?,?,?)';
         if ($stmt->prepare($sql)){
             $stmt->bind_param("sisss", $title, $category, $description, $source, $dt);
-            if (!$stmt->execute()){
-//              echo "Отсутствует возможность сохранить эти данные.";
-                $errMsg = "Отсутствует возможность сохранить эти данные.";
-            }
+            $stmt->execute();
             $stmt->close();
+            return true;
+        }else
+            return false;
+        }catch (Exception $exc){
+            unset ($stmt);
+            return false;
         }
     }
 
     /**
-     *    Выборка всех записей из новостной ленты
+     * Выборка всех записей из новостной ленты
      *
      * @return array - результат выборки в виде массива
      */
 
     function getNews()
     {
-        $array = [];
-        $sql = 'SELECT title,category,description,source,datetime FROM msgs';
-        $result = mysqli_query($this->_db, $sql);
-        while ($row = mysqli_fetch_assoc($result)){
-            $array[]=$row;
-        }
-        print_r($array);
-        return $array;
+        try {
+            $array = [];
+            $sql = 'SELECT title,category,description,source,datetime FROM msgs';
+            $result = mysqli_query($this->_db, $sql);
+            while ($row = mysqli_fetch_assoc($result)) {
+                $array[] = $row;
+            }
+            return $array;
+        }catch(Exception $exc){
+            unset($result);
+            return [];
+         }
+
     }
 
     /**
