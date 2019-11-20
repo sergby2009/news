@@ -4,7 +4,7 @@
         if ($news->saveNews($_POST['title'],$_POST['category'],$_POST['description'],$_POST['source'])){
             header("Location: {$_SERVER['REQUEST_URI']}");
         }else{
-            $errMsg = "Отсутствует возможность сохранить эти данные.";
+            $errMsg = "Произошла ошибка при сохранении новости.";
         }
             ;
     }else{

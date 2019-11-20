@@ -165,7 +165,9 @@ class NewsDB implements INewsDB
     {
         try {
             $array = [];
-            $sql = 'SELECT title,category,description,source,datetime FROM msgs';
+            $sql = 'SELECT msgs.id as id, msgs.title as title,category.name as category  ,msgs.description as description,source,datetime
+                    FROM msgs LEFT JOIN category ON(category.id = msgs.category)
+                    ORDER BY msgs.id DESC';
             $result = mysqli_query($this->_db, $sql);
             while ($row = mysqli_fetch_assoc($result)) {
                 $array[] = $row;
@@ -173,7 +175,7 @@ class NewsDB implements INewsDB
             return $array;
         }catch(Exception $exc){
             unset($result);
-            return [];
+            return false;
          }
 
     }
