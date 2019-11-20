@@ -41,6 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') include_once('save_news.inc.php');
 
 <?php
 include_once('get_news.inc.php');
+// Тест тест тест
 ?>
 </body>
 </html>
