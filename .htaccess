@@ -1,3 +1,6 @@
 Options +FollowSymlinks
 Options Indexes
+#<IfModule dir_module>
+#    DirectoryIndex .php
+#</IfModule>
 
