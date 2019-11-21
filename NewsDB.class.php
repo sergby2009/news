@@ -190,14 +190,20 @@ class NewsDB implements INewsDB
 
     function deleteNews($id)
     {
-        $stmt =  $this->_db->stmt_init();
-        $sql = 'DELETE FROM msgs WHERE msgs.id = ?';
-        if ($stmt->prepare($sql)){
-            $stmt->bind_param("i", $id);
-            if (!$stmt->execute()){
-                echo "Отсутствует возможность удалить эту запись.";
+        try {
+            $stmt = $this->_db->stmt_init();
+            $sql = 'DELETE FROM msgs WHERE msgs.id = ?';
+            if ($stmt->prepare($sql)) {
+                $stmt->bind_param("i", $id);
+                if (!$stmt->execute()) {
+                    throw new Exception('Ошибка удаления новости.');
+                }
+                $stmt->close();
+                return true;
             }
-            $stmt->close();
+        }catch (Exception $exc){
+            unset ($stmt);
+            return false;
         }
     }
 

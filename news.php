@@ -5,6 +5,7 @@
  $news = new NewsDB();
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') include_once('save_news.inc.php');
+if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['del'])) include_once('delete_news.inc.php');
 ?>
 
 <!doctype html>
@@ -41,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') include_once('save_news.inc.php');
 
 <?php
 include_once('get_news.inc.php');
-// Тест тест тест
+
 ?>
 </body>
 </html>
