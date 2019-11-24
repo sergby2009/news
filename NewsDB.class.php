@@ -11,7 +11,9 @@ class NewsDB implements INewsDB
 
     private static $sql_DropDatabase = "DROP DATABASE " . SQL_DB_NAME;
     private static $sql_CreateDatabase = "CREATE DATABASE " . SQL_DB_NAME . " CHARACTER SET utf8 COLLATE utf8_general_ci";
-
+    const RSS_NAME = "rss.xml";
+    const RSS_TITLE = "Новостная лента";
+    const RSS_LINK = "http://p1.local/news.php";
 
     private static $sql_CreateTableCategory = "CREATE TABLE category (
                                               id int(11) NOT NULL AUTO_INCREMENT,
@@ -57,6 +59,7 @@ class NewsDB implements INewsDB
         }
     }
 
+
     /**
      * @param $dbName
      * @return bool
@@ -78,6 +81,9 @@ class NewsDB implements INewsDB
         return $all_query_ok ? $this->_db->select_db($dbName): FALSE;
     }
 
+    /**
+     * @return bool
+     */
     private function createTables()
     {
         $all_query_ok = TRUE; // контроль удачного завершения запроса
@@ -139,13 +145,14 @@ class NewsDB implements INewsDB
         $category = $this->makeIntegerDateToDB($category);
         $description = $this->makeStringDateToDB($description);
         $source = $this->makeStringDateToDB($source);
-        $dt = date('Y-m-d');
+        $dt = date("Y/m/d");
         $stmt =  $this->_db->stmt_init();
         $sql = 'INSERT INTO msgs (title,category,description,source,datetime) VALUES (?,?,?,?,?)';
         if ($stmt->prepare($sql)){
             $stmt->bind_param("sisss", $title, $category, $description, $source, $dt);
             $stmt->execute();
             $stmt->close();
+            $this->createRss();
             return true;
         }else
             return false;
@@ -199,12 +206,74 @@ class NewsDB implements INewsDB
                     throw new Exception('Ошибка удаления новости.');
                 }
                 $stmt->close();
+                $this->createRss();
                 return true;
             }
         }catch (Exception $exc){
             unset ($stmt);
             return false;
         }
+    }
+
+    /**
+     *
+     */
+    private function createRss(){
+        $dom = new DOMDocument('1.0','utf-8');
+        $dom->formatOutput = true; // запись в файл с отступами
+        $dom->preserveWhiteSpace = false; // не сохранять пробелы в результирующем файле
+
+        $root_rss = $dom->createElement('rss'); // создание первого элемента в памяти
+        $dom->appendChild($root_rss); // привязка к корневому элементу документа
+        $version = $dom->createAttribute('version'); // создание атрибута элемента
+        $version->value = "2.0"; // инициализация атрибута элемента
+        $root_rss->appendChild($version);
+        $channel = $dom->createElement('channel');
+        $root_rss->appendChild($channel);
+
+        $title = $dom->createElement('title');
+        $title_text = $dom->createTextNode(self::RSS_TITLE);
+        $title->appendChild($title_text);
+        $channel->appendChild($title);
+
+        $link = $dom->createElement('link');
+        $link_text = $dom->createTextNode(self::RSS_LINK);
+        $link->appendChild($link_text);
+        $channel->appendChild($link);
+
+        $arr = $this->getNews();
+        foreach ($arr as $news) {
+            $item = $dom->createElement('item');
+
+            $item_title = $dom->createElement('title');
+            $item_title_text = $dom->createTextNode($news['title']);
+            $item_title->appendChild($item_title_text);
+            $item->appendChild($item_title);
+
+            $item_link = $dom->createElement('link');
+            $item_link_text = $dom->createTextNode($news['link']);
+            $item_link->appendChild($item_link_text);
+            $item->appendChild($item_link);
+
+            $item_description = $dom->createElement('description');
+            $item_description_text = $dom->createTextNode($news['description']);
+            $item_description->appendChild($item_description_text);
+            $item->appendChild($item_description);
+
+            $item_pubDate = $dom->createElement('pubDate');
+            $item_pubDate_text = $dom->createTextNode($news['datetime']);
+            $item_pubDate->appendChild($item_pubDate_text);
+            $item->appendChild($item_pubDate);
+
+            $item_category = $dom->createElement('category');
+            $item_category_text = $dom->createTextNode($news['category']);
+            $item_category->appendChild($item_category_text);
+            $item->appendChild($item_category);
+
+            $channel->appendChild($item);
+        }
+            $dom->save(self::RSS_NAME);
+
     }
 
     /**
@@ -221,7 +290,7 @@ class NewsDB implements INewsDB
      */
     private function makeStringDateToDB($data)
     {
-       $data = trim(strip_tags((string)$data));
+       $data = str_replace(array("\r\n","\r","\n"),"",trim(strip_tags((string)$data)));
        return $this->_db->real_escape_string($data);
     }
 
