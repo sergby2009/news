@@ -33,7 +33,7 @@ class NewsDB implements INewsDB
     private static $sql_InsertTableCategoryData2 = "INSERT INTO category (name) VALUES ('Культура')";
     private static $sql_InsertTableCategoryData3 = "INSERT INTO category (name) VALUES ('Спорт')";
 
-    private $_db;
+    protected $_db;
 
     /**
      * Подключение к БД (в случае отсутствия создание новой базы данных)
@@ -288,7 +288,7 @@ class NewsDB implements INewsDB
      * @param $data
      * @return mixed
      */
-    private function makeStringDateToDB($data)
+    protected function makeStringDateToDB($data)
     {
        $data = str_replace(array("\r\n","\r","\n"),"",trim(strip_tags((string)$data)));
        return $this->_db->real_escape_string($data);
@@ -297,7 +297,7 @@ class NewsDB implements INewsDB
     /**
      * @param $data
      */
-    private function makeIntegerDateToDB($data)
+    protected function makeIntegerDateToDB($data)
     {
         return $data * 1;
     }
