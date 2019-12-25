@@ -1,5 +1,6 @@
 <?php
-const RSS_URL = "http://p1.local/rss.xml";
+const RSS_URL = "http://php1.local/rss.xml";
+//const RSS_URL = "http://p1.local/rss.xml";
 const RSS_NAME = "news.xml";
 
 /**

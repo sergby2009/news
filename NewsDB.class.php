@@ -13,7 +13,7 @@ class NewsDB implements INewsDB
     private static $sql_CreateDatabase = "CREATE DATABASE " . SQL_DB_NAME . " CHARACTER SET utf8 COLLATE utf8_general_ci";
     const RSS_NAME = "rss.xml";
     const RSS_TITLE = "Новостная лента";
-    const RSS_LINK = "http://p1.local/news.php";
+    const RSS_LINK = "http://php1.local/rss.xml";
 
     private static $sql_CreateTableCategory = "CREATE TABLE category (
                                               id int(11) NOT NULL AUTO_INCREMENT,
@@ -251,7 +251,7 @@ class NewsDB implements INewsDB
             $item->appendChild($item_title);
 
             $item_link = $dom->createElement('link');
-            $item_link_text = $dom->createTextNode($news['link']);
+            $item_link_text = $dom->createTextNode($news['source']);
             $item_link->appendChild($item_link_text);
             $item->appendChild($item_link);
 
