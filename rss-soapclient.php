@@ -14,7 +14,7 @@ try{
     $result = $client->getNewsCountByCat(1);
     echo "<p>Всего новостей в категории Политика: {$result}</p>";
 //  Вывод новости по ID
-    $result = $client->getNewsByID(5);
+    $result = $client->getNewsByID(6);
     $result = unserialize(base64_decode($result));
     var_dump($result);
 } catch (SoapFault $exception) {

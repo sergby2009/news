@@ -36,7 +36,7 @@ if (!file_exists(RSS_NAME)){
         <p>
             <strong>Категория: {$item->category}</strong><br>
             {$item->description}<br>
-            <a href="{%item->link}">Читать дальше...></a>
+            <a href="{$item->link}">Читать дальше...></a>
         </p>
 RSS_NAME;
     }//foreach

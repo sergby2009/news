@@ -1,6 +1,3 @@
-<?php
-include
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,8 +8,10 @@ include
 <body>
     <h3>RSS-лента</h3>
     <p>
-        <a href="news.php">Добавить новость в ленту</a>
+        <a href="news.php">Добавить новость в ленту</a><br>
+        <a href="rss_reader.php">Прочитать ленту</a><br>
+        <a href="rss-soapclient.php">SOAP запрос</a><br>
+        <a href="xml-rpc-client.php">XML-RPC запрос</a>
     </p>
 </body>
 </html>
-
